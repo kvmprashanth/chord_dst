@@ -122,6 +122,7 @@ func Create(conf *Config, trans Transport) (*Ring, error) {
 	return ring, nil
 }
 
+
 // Joins an existing Chord ring
 func Join(conf *Config, trans Transport, existing string) (*Ring, error) {
 	// Initialize the hash bits
