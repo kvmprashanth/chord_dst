@@ -55,6 +55,10 @@ func main() {
 	fmt.Println(r1.Vnodes)	
 	fmt.Println(r2.Vnodes)	
 
+	for i := 0; i < r1.Len(); i++ {
+		//r1.Vnodes[i].Leave()
+	}
+
 	// Shutdown
 	r1.Shutdown()
 	r2.Shutdown()
