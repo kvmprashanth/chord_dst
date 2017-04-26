@@ -4,7 +4,7 @@ import(
 	"os"
 	"fmt"
 	"bytes"
-	"chord"
+	"go-chord/chord"
 	"time"
 	"sort"
 	"crypto/sha1"
@@ -30,7 +30,7 @@ func prepRing(listen string) (*chord.Config, *chord.TCPTransport, error) {
 
 func main(){
 	
-	fmt.Println("Chord DST \n\n")
+	fmt.Println("Chord DST")
 	
 	// Prepare to create 2 nodes
 	ip_address := os.Args[1]
@@ -59,7 +59,6 @@ func main(){
 	}
 
 	// Create or join rings based on the arguments
-
 	r1 := &chord.Ring{}
 
 	if join_req == 0 {
@@ -73,40 +72,65 @@ func main(){
 			fmt.Println("failed to join remote node! Got %s", err)
 		}	
 	}
-	fmt.Println(r1.Vnodes)	
-/*
-	// Create a second ring
-	c2, t2, err := prepRing("192.168.0.8:10002")
-	
+	fmt.Println("Nodes created with ids (starting with): a", r1.Vnodes)	
 
-	c3, t3, err := prepRing("192.168.0.8:10003")
-	r3, err := chord.Join(c3, t3, c1.Hostname)
-	if err != nil {
-		fmt.Println("failed to join remote node! Got %s", err)
-	}
-*/
-	//time.Sleep(10 * time.Second)
 	sort.Sort(r1)
+
+	r1.Vnodes[0].Map["test"] = "testing"
 	
-	i := 0
 	for {
-		fmt.Println("Enter Your Choices")
-		fmt.Println("1: List Successors")
-		fmt.Println("2: List Predecessors")
-		fmt.Println("3: Exit")
-		
+		i := 0
+
+		fmt.Println("\n\nMenu")
+		fmt.Println("\t1: List Successors")
+		fmt.Println("\t2: List Predecessors")
+		fmt.Println("\t3: PUT key-value into store")
+		fmt.Println("\t4: GET key-value from store")
+		fmt.Println("\t5: Display key-value pairs in current node")
+		fmt.Println("\t0: Exit")
+
+		fmt.Println("Enter your choice")
 		fmt.Scanf("%d", &i)
+
 		if i ==1 {
 			for i := 0; i < r1.Len(); i++ {
-				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Successors[0])
+				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Successors[0], r1.Vnodes[i].Successors[0].Host)
 			}
-		}
-		if i == 2 {
+		} else if i == 2 {
 			for i := 0; i < r1.Len(); i++ {
-				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Predecessor)
+				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Predecessor, r1.Vnodes[i].Predecessor.Host)
 			}	
-		}
-		if i == 3 {
+		} else if i == 3 {
+			
+			key := ""
+			value := ""
+
+			fmt.Println("Enter Key: ")
+			fmt.Scanf("%s", &key)
+			fmt.Println("Enter Value: ")
+			fmt.Scanf("%s", &value)
+
+			//r1.Vnodes[1].Successors[0].Put(5)
+
+		} else if i == 5 {
+			
+			//vn := r1.Vnodes[0].Successors[0]
+			//fmt.Println(vn.Last_finger)
+			
+			fmt.Println("Key-Values at VNode-1")
+			//fmt.Println(r1.Vnodes[0].Get())
+			for key, value := range r1.Vnodes[0].Map {
+ 	  			fmt.Println("\t", key, "-", value)
+ 	  		}
+
+ 	  		fmt.Println("Key-Values at VNode-2")
+ 	  		//fmt.Println(r1.Vnodes[1].Get())
+			for key, value := range r1.Vnodes[1].Map {
+ 	  			fmt.Println("\t", key, "-", value)
+ 	  		}
+ 	  			
+		} else if i == 0 {
+			
 			break
 		}
 	}
@@ -116,45 +140,7 @@ func main(){
 	}
 
 	r1.Shutdown()
-/*	r2.Shutdown()
-	r3.Shutdown()
-*/
 	t1.Shutdown()
-/*	t2.Shutdown()
-	t3.Shutdown()
-*/
+
 }
 
-
-
-/*
-
-	// Fix finger should not error
-	vn := r.Vnodes[0]
-	if err := vn.FixFingerTable(); err != nil {
-		fmt.Println("unexpected err. %s", err)
-	}
-
-	//fmt.Println(vn.Finger)
-
-	// Check we've progressed
-	if vn.Last_finger != 158 {
-		fmt.Println("unexpected last finger. %s", err)
-	}
-	
-	// Ensure that we've setup our successor as the initial entries
-	for i := 0; i < vn.Last_finger; i++ {
-		if vn.Finger[i] != vn.Successors[0] {
-			fmt.Println("unexpected finger entry!")
-		}
-	}
-
-	// Fix next index
-	if err := vn.FixFingerTable(); err != nil {
-		fmt.Println("unexpected err, %s", err)
-	}
-	/*if vn.Last_finger != 0 {
-		fmt.Println("unexpected last finger! %d", vn.Last_finger)
-	}
-
-	*/
