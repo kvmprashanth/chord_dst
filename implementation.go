@@ -8,18 +8,17 @@ import(
 	"crypto/sha1"
 )
 
-func prepRing(port int, noOfVnode int) (*chord.Config, *chord.TCPTransport, error) {
-	listen := fmt.Sprintf("127.0.0.1:%d", port)
+func prepRing(listen string) (*chord.Config, *chord.TCPTransport, error) {
 	conf := &chord.Config{
 		Hostname:	   listen,
-		NumVnodes:     noOfVnode,
+		NumVnodes:     2,
 		NumSuccessors: 1,
 		HashFunc:      sha1.New,
 		HashBits:      160,
-		StabilizeMin:  time.Second,
-		StabilizeMax:  5 * time.Second,
+		StabilizeMin:  15 * time.Millisecond,
+		StabilizeMax:  60 * time.Millisecond,
 	}
-	timeout := time.Duration(200 * time.Millisecond)
+	timeout := time.Duration(20 * time.Millisecond)
 	trans, err := chord.InitTCPTransport(listen, timeout)
 	if err != nil {
 		return nil, nil, err
@@ -32,7 +31,7 @@ func main(){
 	fmt.Println("Chord DST \n\n")
 	
 	// Prepare to create 2 nodes
-	c1, t1, err := prepRing(10004, 2)
+	c1, t1, err := prepRing("localhost:10001")
 	if err != nil {
 		fmt.Println("unexpected err. %s", err)
 	}
@@ -43,18 +42,14 @@ func main(){
 		fmt.Println("unexpected err. %s", err)
 	}
 
-	
-
-	//fmt.Println(r1.Vnodes)	
-
 	// Create a second ring
-	c2, t2, err := prepRing(10005, 2)
+	c2, t2, err := prepRing("192.168.0.102:10002")
 	r2, err := chord.Join(c2, t2, c1.Hostname)
 	if err != nil {
 		fmt.Println("failed to join remote node! Got %s", err)
 	}
 
-	c3, t3, err := prepRing(10006, 2)
+	c3, t3, err := prepRing("192.168.0.102:10003")
 	r3, err := chord.Join(c3, t3, c1.Hostname)
 	if err != nil {
 		fmt.Println("failed to join remote node! Got %s", err)
