@@ -36,11 +36,10 @@ type Transport interface {
 
 	// Register for an RPC callbacks
 	Register(*Vnode, VnodeRPC)
-/*
+
 	PutKey(*Vnode, int) error 
 
 	GetKey(*Vnode) (int, error)
-*/
 }
 
 // These are the methods to invoke on the registered vnodes
@@ -50,8 +49,8 @@ type VnodeRPC interface {
 	FindSuccessors(int, []byte) ([]*Vnode, error)
 	ClearPredecessor(*Vnode) error
 	SkipSuccessor(*Vnode) error
-	/*PutKey(int) error 
-	GetKey() (int, error)*/
+	PutKey(int) error 
+	GetKey() (int, error)
 }
 
 // Delegate to notify on ring events

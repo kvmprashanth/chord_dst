@@ -143,6 +143,14 @@ func (lt *LocalTransport) SkipSuccessor(target, self *Vnode) error {
 	return lt.remote.SkipSuccessor(target, self)
 }
 
+func (lt *LocalTransport) PutKey(vn *Vnode, value int) error  {
+	return fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
+}
+
+func (lt *LocalTransport) GetKey(vn *Vnode) (int, error)  {
+	return 0, fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
+}
+
 func (lt *LocalTransport) Register(v *Vnode, o VnodeRPC) {
 	// Register local instance
 	key := v.String()
@@ -196,4 +204,12 @@ func (*BlackholeTransport) SkipSuccessor(target, self *Vnode) error {
 }
 
 func (*BlackholeTransport) Register(v *Vnode, o VnodeRPC) {
+}
+
+func (*BlackholeTransport) PutKey(vn *Vnode, value int) error  {
+	return fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
+}
+
+func (*BlackholeTransport) GetKey(vn *Vnode) (int, error)  {
+	return 0, fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
 }

@@ -18,9 +18,9 @@ func prepRing(listen string) (*chord.Config, *chord.TCPTransport, error) {
 		HashFunc:      sha1.New,
 		HashBits:      160,
 		StabilizeMin:  15 * time.Millisecond,
-		StabilizeMax:  60 * time.Millisecond,
+		StabilizeMax:  100 * time.Millisecond,
 	}
-	timeout := time.Duration(20 * time.Millisecond)
+	timeout := time.Duration(200 * time.Millisecond)
 	trans, err := chord.InitTCPTransport(listen, timeout)
 	if err != nil {
 		return nil, nil, err
@@ -72,11 +72,11 @@ func main(){
 			fmt.Println("failed to join remote node! Got %s", err)
 		}	
 	}
-	fmt.Println("Nodes created with ids (starting with): a", r1.Vnodes)	
+	fmt.Println("Nodes created with ids (starting with):", r1.Vnodes)	
 
 	sort.Sort(r1)
 
-	r1.Vnodes[0].Map["test"] = "testing"
+	//r1.Vnodes[0].Map["test"] = "testing"
 	
 	for {
 		i := 0
@@ -94,11 +94,11 @@ func main(){
 
 		if i ==1 {
 			for i := 0; i < r1.Len(); i++ {
-				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Successors[0], r1.Vnodes[i].Successors[0].Host)
+				fmt.Printf("\n%s\t%s @%s", r1.Vnodes[i], r1.Vnodes[i].Successors[0], r1.Vnodes[i].Successors[0].Host)
 			}
 		} else if i == 2 {
 			for i := 0; i < r1.Len(); i++ {
-				fmt.Println(r1.Vnodes[i], r1.Vnodes[i].Predecessor, r1.Vnodes[i].Predecessor.Host)
+				fmt.Printf("\n%s\t%s @%s", r1.Vnodes[i], r1.Vnodes[i].Predecessor, r1.Vnodes[i].Predecessor.Host)
 			}	
 		} else if i == 3 {
 			
@@ -110,7 +110,7 @@ func main(){
 			fmt.Println("Enter Value: ")
 			fmt.Scanf("%s", &value)
 
-			//r1.Vnodes[1].Successors[0].Put(5)
+			r1.Vnodes[1].Successors[0].Map[key] = value
 
 		} else if i == 5 {
 			
@@ -118,13 +118,13 @@ func main(){
 			//fmt.Println(vn.Last_finger)
 			
 			fmt.Println("Key-Values at VNode-1")
-			//fmt.Println(r1.Vnodes[0].Get())
+			//fmt.Println(r1.Vnodes[0].GetKey())
 			for key, value := range r1.Vnodes[0].Map {
  	  			fmt.Println("\t", key, "-", value)
  	  		}
 
  	  		fmt.Println("Key-Values at VNode-2")
- 	  		//fmt.Println(r1.Vnodes[1].Get())
+ 	  		//fmt.Println(r1.Vnodes[1].GetKey())
 			for key, value := range r1.Vnodes[1].Map {
  	  			fmt.Println("\t", key, "-", value)
  	  		}

@@ -3,13 +3,13 @@ package chord
 import (
 	"encoding/binary"
 	"fmt"
-	"log"
+	//"log"
 	"time"
 )
 
 // Converts the ID to string
 func (vn *Vnode) String() string {
-	return fmt.Sprintf("%x", vn.Id)//[:2]
+	return fmt.Sprintf("%x", vn.Id)[:2]
 }
 
 // Initializes a local vnode
@@ -47,9 +47,11 @@ func (vn *LocalVnode) GetKey() (int, error) {
 	return vn.Test, nil
 }
 /*
+Notify(target, self *Vnode) ([]*Vnode, error)
 Notify(*Vnode) ([]*Vnode, error)
 func (vn *LocalVnode) Notify(maybe_pred *Vnode) ([]*Vnode, error)
 
+GetPredecessor(*Vnode) (*Vnode, error)
 GetPredecessor() (*Vnode, error)
 func (vn *LocalVnode) GetPredecessor() (*Vnode, error)
 */
@@ -292,7 +294,7 @@ func (vn *LocalVnode) FindSuccessors(n int, key []byte) ([]*Vnode, error) {
 		if err == nil {
 			return res, nil
 		} else {
-			log.Printf("[ERR] Failed to contact %s. Got %s", closest.String(), err)
+			//log.Printf("[ERR] Failed to contact %s. Got %s", closest.String(), err)
 		}
 	}
 

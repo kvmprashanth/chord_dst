@@ -550,6 +550,16 @@ func (t *TCPTransport) SkipSuccessor(target, self *Vnode) error {
 	}
 }
 
+func (t *TCPTransport) PutKey(vn *Vnode, value int) error  {
+	return fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
+	//vn.PutKey(90)
+	//return nil
+}
+
+func (t *TCPTransport) GetKey(vn *Vnode) (int, error)  {
+	return 0, fmt.Errorf("Failed to connect! Blackhole: %s", vn.String())
+}
+
 // Register for an RPC callbacks
 func (t *TCPTransport) Register(v *Vnode, o VnodeRPC) {
 	key := v.String()
